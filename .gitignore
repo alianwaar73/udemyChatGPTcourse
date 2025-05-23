@@ -2,6 +2,6 @@
 *.log
 *.tmp
 *.env
-messages.json
+**/messages.json
 __pycache__/
 node_modules/
