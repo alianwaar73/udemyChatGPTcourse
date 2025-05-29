@@ -3,5 +3,7 @@
 *.tmp
 *.env
 **/messages.json
+*.zip
 __pycache__/
 node_modules/
+Resources/
