@@ -1,6 +1,6 @@
 # udemyChatGPTcourse
 
-First go through of Udemy's ChatGPT course. Lightly commented. No personal projects. [Course link](https://www.udemy.com/share/109HbI3@2jeNzCrmSShzOCAt5UMVGp3QlEZwnffD5prYbjKQYgFIqwTksjdNRUU72UkRRxdk5g==/). Course author: [Stephen Grider](https://github.com/StephenGrider) 
+First go through of Udemy's ChatGPT course. Lightly commented. No personal projects. [Course link](https://www.udemy.com/share/109HbI3@2jeNzCrmSShzOCAt5UMVGp3QlEZwnffD5prYbjKQYgFIqwTksjdNRUU72UkRRx[...])
 
 ---
 
@@ -48,17 +48,33 @@ exit
 
 ---
 
-## Example Usage
+## Project Usage Instructions
 
-Generate code and test:
+Below are brief instructions for running each project in this repository.
+
+### 1. pycode
+
+**Generate code and test:**
 ```bash
 python pycode/main.py --language javascript --task 'print hello'
 ```
+- This script uses LangChain and prompt engineering to generate code and corresponding tests in your chosen language.
 
-Start a chat session:
+### 2. tchat
+
+**Start a conversational chat session:**
 ```bash
 python pycode/tchat/main.py
 ```
+- This launches a chatbot terminal session that uses LangChain's conversational memory for persistent chat.
+
+### 3. facts
+
+**Run the facts project:**
+```bash
+python facts/main.py
+```
+- This project provides facts or trivia (see the `facts` directory for more details). Make sure your `.env` file is set up if the script requires the OpenAI API key.
 
 ---
 
@@ -74,6 +90,7 @@ python pycode/tchat/main.py
 
 - `pycode/main.py` – Sequential code & test generation
 - `pycode/tchat/main.py` – Conversational chatbot using memory
+- `facts/main.py` – Facts or trivia generation
 - `Resources/16-chains/code/main.py` – Chained LLM example
 
 ---
@@ -81,3 +98,7 @@ python pycode/tchat/main.py
 > **Note:** This is a course-following repo for learning and reference, not production-ready.
 
 Owner: [alianwaar73](https://github.com/alianwaar73)
+
+---
+
+> _This README was generated and updated by GitHub Copilot AI._
