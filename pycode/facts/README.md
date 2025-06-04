@@ -1,80 +1,139 @@
 # facts
 
-This project is part of the [udemyChatGPTcourse](https://github.com/alianwaar73/udemyChatGPTcourse) repository and demonstrates the use of LangChain and OpenAI for text chunking and processing, specifically for extracting and working with facts from a text file.
+This project is a follow-up to an online course (not suitable for production scenarios) and demonstrates the use of LangChain, OpenAI, and ChromaDB for processing, embedding, and querying textual facts. It is part of the [udemyChatGPTcourse](https://github.com/alianwaar73/udemyChatGPTcourse) repository.
+
+---
+
+## Overview
+
+The project showcases:
+
+- **Loading and Chunking Text:** Facts are loaded from a simple text file and split into manageable chunks.
+- **Embeddings and Vector Store:** Each chunk is embedded using OpenAI's embeddings and stored in a Chroma vector database.
+- **Prompting and Retrieval:** The system allows querying the stored facts using a prompt, leveraging retrieval-augmented generation (RAG) pipelines.
+- **Redundancy Filtering:** Custom retrieval logic is implemented to remove duplicate/redundant documents from query results using embedding similarity.
 
 ---
 
 ## Environment Setup
 
-This project uses **Python 3.11** and manages dependencies with [Pipenv](https://pipenv.pypa.io/en/latest/).
+This project uses **Python 3.11** and manages dependencies via [Pipenv](https://pipenv.pypa.io/en/latest/).
 
-### 1. Install Pipenv (if not already installed)
-```bash
-pip install pipenv
-```
+1. **Install Pipenv:**
+   ```bash
+   pip install pipenv
+   ```
 
-### 2. Install dependencies and create environment
-Run this in the project root or `pycode/` directory (where the `Pipfile` is present):
-```bash
-pipenv install
-```
+2. **Install dependencies:**
+   ```bash
+   pipenv install
+   ```
 
-### 3. Enter the virtual environment
-```bash
-pipenv shell
-```
+3. **Activate the virtual environment:**
+   ```bash
+   pipenv shell
+   ```
 
-### 4. Add your OpenAI API key
-Create a `.env` file in this directory with:
-```
-OPENAI_API_KEY=your-api-key-here
-```
+4. **Add your OpenAI API key:**
+   Create a `.env` file in this directory with:
+   ```
+   OPENAI_API_KEY=your-api-key-here
+   ```
 
-### 5. Exit the virtual environment
-Simply type:
-```bash
-exit
-```
-
----
-
-## Features
-
-- **Text Loading & Chunking:** Loads facts from a plain text file (`facts.txt`) and splits the content into manageable "chunks" using custom settings.
-- **Embeddings Preparation:** Prepares the text for further processing such as embeddings or advanced LLM tasks.
-- **Customizable Chunking:** Uses LangChain's `CharacterTextSplitter` to control chunk size, separator, and overlap, allowing fine-tuned text handling.
-- **Debugging Output:** Prints out each chunked text segment for inspection, ensuring chunking settings are appropriate for the document.
-
----
-
-## Usage
-
-To process the facts file and view chunked text segments, run:
-
-```bash
-python facts/main.py
-```
-
-You will see each chunked segment printed in the terminal, which can then be used for further LLM or embedding workflows.
+5. **Exit the environment:**
+   ```bash
+   exit
+   ```
 
 ---
 
 ## File Structure
 
-- `main.py` – Loads, splits, and prints content from `facts.txt` using LangChain utilities.
-- `facts.txt` – Text file containing facts to be processed (provide your own).
+- `facts.txt` – List of facts to be processed.
+- `main.py` – Loads, splits, embeds facts, and stores them in ChromaDB. Also demonstrates querying the vector db.
+- `prompt.py` – Enables interactive querying of the embedded facts using a RetrievalQA chain, utilizing a custom retriever to filter redundant results.
+- `redundant_filter_retriever.py` – Custom retriever class to filter out redundant/duplicate documents based on embedding similarity.
+- `Pipfile` – Dependency management.
 
 ---
 
-## Implementation Notes
+## Usage
 
-This project, as explained in the code comments:
-- Demonstrates the use of LangChain's `TextLoader` to load a text file.
-- Uses `CharacterTextSplitter` to define how the text is divided (by newline, with a chunk size of 200 characters, and no overlap).
-- Explains how chunking overlap is more relevant for longer documents (e.g. PDFs).
-- Shows how to inspect chunked results for debugging and further development.
+### 1. **Embedding & Storing Facts**
 
-Review the comments in `main.py` for additional insights and learning.
+Run the main script to load facts, split them, generate embeddings, and store them in ChromaDB:
+
+```bash
+python main.py
+```
+
+This will print out the most relevant facts for a sample query.
+
+> **Note:**  
+> Each time you run `main.py`, embeddings are recalculated and stored in ChromaDB, which may incur OpenAI API costs. In a production setup, embedding calculation and storage should be decoupled to avoid redundant computation and extra costs.
+
+### 2. **Querying the Facts**
+
+Once embeddings are stored, you can interactively query the facts using:
+
+```bash
+python prompt.py
+```
+
+This script uses a chain with a chat model and retrieves relevant facts from the vector store, demonstrating retrieval-augmented QA with redundancy filtering.
+
+---
+
+## Key Concepts & Implementation Details
+
+### Text Chunking & Embeddings
+
+- Facts are loaded using `TextLoader`.
+- Chunking is done by `CharacterTextSplitter` using a newline (`\n`) separator, chunk size of 200 characters, and zero overlap. This is optimal for short .txt files, but for larger documents (e.g. PDFs), overlap settings become more important to avoid abrupt splits.
+- Embeddings are generated using OpenAI's embedding model.
+
+### Vector Store & Cost Considerations
+
+- The vector store uses ChromaDB for efficient similarity search.
+- **[ ] How much does this cost?**  
+  The cost depends on the number and size of embeddings generated, as OpenAI charges per token. For small .txt files, the cost is minimal, but for larger datasets, cost analysis is recommended.  
+  **[x] Addressed:** Cost is minimal for small files; for large-scale use, monitor API usage and decouple embedding generation from querying to optimize costs.
+- Embeddings and vector store are persistently stored in the `emb/` directory.
+
+### Redundancy Filtering
+
+- `redundant_filter_retriever.py` introduces a custom retriever (`RedundantFilterRetriever`) that filters out duplicate or highly similar documents in retrieval, using the `max_marginal_relevance_search_by_vector` method.
+- The lambda parameter (`lambda_mult=0.8`) controls the allowed repetitiveness; higher values allow more similarity.
+
+### Prompting & Query Chains
+
+- `prompt.py` demonstrates using a RetrievalQA chain with a chat model and the custom retriever to answer natural language queries based on the stored facts.
+- **[ ] Slightly confused with the following line. Are we recalculating the embeddings here? If so then why? Shouldn't we just be accessing it somehow?**  
+  **[x] Addressed:** The embedding function is required so the system can embed your query for similarity search, but unless you add new documents, the document embeddings stored in ChromaDB are not recalculated—only the query is embedded at retrieval time.
+- The code comments discuss confusion regarding embedding recalculation—ChromaDB requires an embedding function for similarity search, but embeddings themselves are only recalculated if new documents are added.
+
+---
+
+## Comments & To-Do Summaries
+
+Summaries of code comments marked with `[ ]` (todo comments):
+
+- **[ ] How much does this cost?**  
+  **[x]** Addressed above in Key Concepts: small for short files, but should be monitored for larger datasets.
+- **[ ] Slightly confused with the following line. Are we recalculating the embeddings here?**  
+  **[x]** Clarified above in Prompting & Query Chains: only query embeddings are recalculated, not document embeddings.
+- **[ ] The following block of code is customary to include. For the purposes of this project the above block suffices.**  
+  **[x]** The async method stub is included for completeness but is not used here.
+
+All comments in code files starting with `[ ]` have been addressed and clarified above, following the project’s context and intent.
+
+---
+
+## Limitations
+
+- This codebase is for educational use and not production-ready.  
+- Embedding and storage should be separated in real-world scenarios to avoid unnecessary API usage and costs.
+- The redundancy filter retriever can be fine-tuned for more sophisticated duplicate detection as needed.
 
 ---
 
@@ -86,4 +145,4 @@ Review the comments in `main.py` for additional insights and learning.
 
 ---
 
-> _This README was generated and updated by GitHub Copilot AI._
+> _This README was generated and updated using Copilot's AI. All code file comments marked with `[ ]` have been summarized, addressed, and clarified as per project instructions._
