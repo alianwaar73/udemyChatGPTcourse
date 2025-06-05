@@ -95,9 +95,8 @@ This script uses a chain with a chat model and retrieves relevant facts from the
 ### Vector Store & Cost Considerations
 
 - The vector store uses ChromaDB for efficient similarity search.
-- **[ ] How much does this cost?**  
-  The cost depends on the number and size of embeddings generated, as OpenAI charges per token. For small .txt files, the cost is minimal, but for larger datasets, cost analysis is recommended.  
-  **[x] Addressed:** Cost is minimal for small files; for large-scale use, monitor API usage and decouple embedding generation from querying to optimize costs.
+- - [ ] How much does this cost?
+  - [x] Addressed: The cost depends on the number and size of embeddings generated, as OpenAI charges per token. For small .txt files, the cost is minimal, but for larger datasets, cost analysis is recommended. For large-scale use, monitor API usage and decouple embedding generation from querying to optimize costs.
 - Embeddings and vector store are persistently stored in the `emb/` directory.
 
 ### Redundancy Filtering
@@ -108,24 +107,24 @@ This script uses a chain with a chat model and retrieves relevant facts from the
 ### Prompting & Query Chains
 
 - `prompt.py` demonstrates using a RetrievalQA chain with a chat model and the custom retriever to answer natural language queries based on the stored facts.
-- **[ ] Slightly confused with the following line. Are we recalculating the embeddings here? If so then why? Shouldn't we just be accessing it somehow?**  
-  **[x] Addressed:** The embedding function is required so the system can embed your query for similarity search, but unless you add new documents, the document embeddings stored in ChromaDB are not recalculated—only the query is embedded at retrieval time.
+- - [ ] Slightly confused with the following line. Are we recalculating the embeddings here? If so then why? Shouldn't we just be accessing it somehow?
+  - [x] Addressed: The embedding function is required so the system can embed your query for similarity search, but unless you add new documents, the document embeddings stored in ChromaDB are not recalculated—only the query is embedded at retrieval time.
 - The code comments discuss confusion regarding embedding recalculation—ChromaDB requires an embedding function for similarity search, but embeddings themselves are only recalculated if new documents are added.
 
 ---
 
 ## Comments & To-Do Summaries
 
-Summaries of code comments marked with `[ ]` (todo comments):
+The following are summaries of code comments marked as todo comments (noted in code with [ ]). Each has been addressed here using the standard README markup syntax:
 
-- **[ ] How much does this cost?**  
-  **[x]** Addressed above in Key Concepts: small for short files, but should be monitored for larger datasets.
-- **[ ] Slightly confused with the following line. Are we recalculating the embeddings here?**  
-  **[x]** Clarified above in Prompting & Query Chains: only query embeddings are recalculated, not document embeddings.
-- **[ ] The following block of code is customary to include. For the purposes of this project the above block suffices.**  
-  **[x]** The async method stub is included for completeness but is not used here.
+- [ ] How much does this cost?  
+  - [x] Addressed above in Key Concepts: Cost is minimal for small files, but should be monitored for larger datasets.
+- [ ] Slightly confused with the following line. Are we recalculating the embeddings here?  
+  - [x] Clarified above in Prompting & Query Chains: Only query embeddings are recalculated, not document embeddings.
+- [ ] The following block of code is customary to include. For the purposes of this project the above block suffices.  
+  - [x] The async method stub is included for completeness but is not used here.
 
-All comments in code files starting with `[ ]` have been addressed and clarified above, following the project’s context and intent.
+All todo comments from code files have been summarized and addressed in the most context-appropriate section of this README.
 
 ---
 
@@ -145,4 +144,4 @@ All comments in code files starting with `[ ]` have been addressed and clarified
 
 ---
 
-> _This README was generated and updated using Copilot's AI. All code file comments marked with `[ ]` have been summarized, addressed, and clarified as per project instructions._
+> _This README was generated and updated using Copilot's AI. All todo comments in code files have been summarized, addressed, and clarified per project instructions._
