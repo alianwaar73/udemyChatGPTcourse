@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "🔄 Fetching latest info from remotes..."
+git fetch --all --prune
+
+echo -e "\n📂 Status of your working directory:"
+git status
+
+echo -e "\n🧾 Recent commits (with structure and stats):"
+git log --graph --oneline --decorate --all --stat
+
+echo -e "\n🧪 Local unstaged changes (if any):"
+git diff
+
+echo -e "\n✅ End of daily git overview."
+
