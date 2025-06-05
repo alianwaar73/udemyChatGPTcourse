@@ -51,31 +51,87 @@ exit
 ## Project Usage Instructions
 
 <!-- AUTO-GENERATED-LIST:START -->
-Below are brief instructions for running each project in this repository.
+### Files in Repository
 
-### 1. pycode
+- `.gitignore`
+- `Resources/16-chains/code/.env`
+- `Resources/16-chains/code/Pipfile`
+- `Resources/16-chains/code/Pipfile.lock`
+- `Resources/16-chains/code/main.py`
+- `Resources/26-summarizations/chat/.env`
+- `Resources/26-summarizations/chat/Pipfile`
+- `Resources/26-summarizations/chat/Pipfile.lock`
+- `Resources/26-summarizations/chat/main.py`
+- `Resources/26-summarizations/chat/messages.json`
+- `Resources/35-chunking/facts/.env`
+- `Resources/35-chunking/facts/Pipfile`
+- `Resources/35-chunking/facts/facts.txt`
+- `Resources/35-chunking/facts/main.py`
+- `Resources/37-introducing/facts/.env`
+- `Resources/37-introducing/facts/Pipfile`
+- `Resources/37-introducing/facts/emb/03d721ae-d724-4ee5-9aa9-61937c4be886/data_level0.bin`
+- `Resources/37-introducing/facts/emb/03d721ae-d724-4ee5-9aa9-61937c4be886/header.bin`
+- `Resources/37-introducing/facts/emb/03d721ae-d724-4ee5-9aa9-61937c4be886/length.bin`
+- `Resources/37-introducing/facts/emb/03d721ae-d724-4ee5-9aa9-61937c4be886/link_lists.bin`
+- `Resources/37-introducing/facts/emb/chroma.sqlite3`
+- `Resources/37-introducing/facts/facts.txt`
+- `Resources/37-introducing/facts/main.py`
+- `Udemy_diagrams/01 - int.pdf`
+- `Udemy_diagrams/02 - pycode.pdf`
+- `Udemy_diagrams/03 - pycode.pdf`
+- `Udemy_diagrams/04-tchat.pdf`
+- `Udemy_diagrams/05-chain.pdf`
+- `Udemy_diagrams/06-chain.pdf`
+- `Udemy_diagrams/07-tchat.pdf`
+- `Udemy_diagrams/07.1-tchat.pdf`
+- `Udemy_diagrams/08-vectorstores.pdf`
+- `Udemy_diagrams/09-agents.pdf`
+- `Udemy_diagrams/10-app.pdf`
+- `Udemy_diagrams/11-web.pdf`
+- `Udemy_diagrams/12-app.pdf`
+- `Udemy_diagrams/13-chat.pdf`
+- `Udemy_diagrams/13-uploads.pdf`
+- `Udemy_diagrams/14-int.pdf`
+- `Udemy_diagrams/15-chat.pdf`
+- `Udemy_diagrams/16-chat2.pdf`
+- `Udemy_diagrams/17-chat3.pdf`
+- `Udemy_diagrams/18-chat4.pdf`
+- `Udemy_diagrams/19-chat5.pdf`
+- `Udemy_diagrams/20-chat6.pdf`
+- `Udemy_diagrams/21-chat7.pdf`
+- `Udemy_diagrams/22-chat8.pdf`
+- `Udemy_diagrams/23-chat9.pdf`
+- `pycode/Pipfile`
+- `pycode/Pipfile.lock`
+- `pycode/facts/.env`
+- `pycode/facts/Pipfile`
+- `pycode/facts/Pipfile.lock`
+- `pycode/facts/emb/82e1d589-8e2b-47cb-8363-6d20fd9b2544/data_level0.bin`
+- `pycode/facts/emb/82e1d589-8e2b-47cb-8363-6d20fd9b2544/header.bin`
+- `pycode/facts/emb/82e1d589-8e2b-47cb-8363-6d20fd9b2544/length.bin`
+- `pycode/facts/emb/82e1d589-8e2b-47cb-8363-6d20fd9b2544/link_lists.bin`
+- `pycode/facts/emb/chroma.sqlite3`
+- `pycode/facts/facts.txt`
+- `pycode/facts/main.py`
+- `pycode/facts/prompt.py`
+- `pycode/facts/redundant_filter_retriever.py`
+- `pycode/main.py`
+- `pycode/tchat/.env`
+- `pycode/tchat/21-representing/chat/.env`
+- `pycode/tchat/21-representing/chat/Pipfile`
+- `pycode/tchat/21-representing/chat/Pipfile.lock`
+- `pycode/tchat/21-representing/chat/main.py`
+- `pycode/tchat/main.py`
+- `pycode/tchat/messages.json`
+- `scores.ipynb`
+- `tools/git-daily`
 
-**Generate code and test:**
-```bash
-python pycode/main.py --language javascript --task 'print hello'
-```
-- This script uses LangChain and prompt engineering to generate code and corresponding tests in your chosen language.
+### Sub-directory READMEs
 
-### 2. tchat
-
-**Start a conversational chat session:**
-```bash
-python pycode/tchat/main.py
-```
-- This launches a chatbot terminal session that uses LangChain's conversational memory for persistent chat.
-
-### 3. facts
-
-**Run the facts project:**
-```bash
-python facts/main.py
-```
-- This project provides facts or trivia (see the `facts` directory for more details). Make sure your `.env` file is set up if the script requires the OpenAI API key.
+- [pycode/README.md](pycode/README.md)
+- [pycode/facts/README.md](pycode/facts/README.md)
+- [pycode/tchat/README.md](pycode/tchat/README.md)
+- [tools/README.md](tools/README.md)
 
 <!-- AUTO-GENERATED-LIST:END -->
 ---
