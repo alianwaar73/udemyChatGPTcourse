@@ -50,6 +50,7 @@ exit
 
 ## Project Usage Instructions
 
+<!-- AUTO-GENERATED-LIST:START -->
 Below are brief instructions for running each project in this repository.
 
 ### 1. pycode
@@ -76,6 +77,7 @@ python facts/main.py
 ```
 - This project provides facts or trivia (see the `facts` directory for more details). Make sure your `.env` file is set up if the script requires the OpenAI API key.
 
+<!-- AUTO-GENERATED-LIST:END -->
 ---
 
 ## Requirements
@@ -88,11 +90,12 @@ python facts/main.py
 
 ## Repo Structure
 
+<!-- AUTO-GENERATED-LIST:START -->
 - `pycode/main.py` – Sequential code & test generation
 - `pycode/tchat/main.py` – Conversational chatbot using memory
 - `facts/main.py` – Facts or trivia generation
 - `Resources/16-chains/code/main.py` – Chained LLM example
-
+<!-- AUTO-GENERATED-LIST:END -->
 ---
 
 > **Note:** This is a course-following repo for learning and reference, not production-ready.
