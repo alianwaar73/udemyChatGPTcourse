@@ -51,7 +51,7 @@ exit
 
 ## Usage
 
-To generate both code and a test for a specific task and language, run:
+In order to generate both code and a test for a specific task and language, run:
 
 ```bash
 python main.py --language javascript --task "print hello"
