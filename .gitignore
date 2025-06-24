@@ -2,6 +2,7 @@
 *.log
 *.tmp
 *.env
+**/Pipfile.lock
 **/messages.json
 *.zip
 __pycache__/

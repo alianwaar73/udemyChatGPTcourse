@@ -11,33 +11,19 @@ from langchain.prompts import (
 # like the one we have defined to interact with an sqlite db.
 # [ ] Include some description of agents in the README
 from langchain.agents import OpenAIFunctionsAgent, AgentExecutor
-
-# [ADDENDEM:] Post main_backup.py event for the system
-# message approach
-from langchain.schema import SystemMessage
-
 from dotenv import load_dotenv
 
 # The following import is from a file created by us containing
 # the specifics of the tool we want to use for this project.
 # [ ] The README should contain some description around this
 # link.
-# [ADDENDUM:] Modifying the following import for the system
-# message apporach after the main_backup.py event
-from tools.sql import run_query_tool, describe_tables_tool, list_tables
+from tools.sql import run_query_tool
 
 load_dotenv()
 
 chat = ChatOpenAI()
-
-tables = list_tables()
-# [DEBUG:] Uncomment for the following for debugging
-# print(tables)
-
 prompt = ChatPromptTemplate(
         messages=[
-            # [ADDENDUM:]
-            SystemMessage(content=f"You are an AI that has access to an SQLite database.\n{tables}"),
             # Just the variable 'input' defines our
             # HumanMessagePromptTemplate in this case
             HumanMessagePromptTemplate.from_template("{input}"),
@@ -51,8 +37,7 @@ prompt = ChatPromptTemplate(
             ]
         )
 
-# [ADDENDUM:] Post main_backup.py event
-tools = [run_query_tool, describe_tables_tool]
+tools = [run_query_tool]
 
 # Defining our agent's structure
 agent = OpenAIFunctionsAgent(
@@ -103,6 +88,3 @@ agent_executor("What is the most-used shipping address?")
 # (what I call prompt engineering where one figures out a 
 # prompt to provide which makes the agent work right. Or the 
 # approach in the main.py
-# [Addendum] Continuing with the course. Refer to 
-# backups/main_backup.py for the [IMPORTANT] comment block
-# along with its associated description in the README
