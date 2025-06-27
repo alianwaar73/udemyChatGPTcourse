@@ -29,9 +29,16 @@ from dotenv import load_dotenv
 from tools.sql import run_query_tool, describe_tables_tool, list_tables
 from tools.report import write_report_tool
 
+# Handlers for debugging information
+from handlers.chat_model_start_handler import ChatModelStartHandler
+
 load_dotenv()
 
-chat = ChatOpenAI()
+handler = ChatModelStartHandler()
+
+chat = ChatOpenAI(
+        callbacks=[handler]
+        )
 
 tables = list_tables()
 # [DEBUG:] Uncomment for the following for debugging
@@ -91,7 +98,9 @@ agent = OpenAIFunctionsAgent(
 agent_executor = AgentExecutor(
         # From the above defined agent
         agent=agent,
-        verbose=True,
+        # The following line is commented out AFTER the 
+        # incorporation of handlers above
+        # verbose=True,
         tools=tools,
         # Wiring in memory
         memory=memory
@@ -136,7 +145,7 @@ agent_executor("How many users have provided a shipping address?")
 # agent_executor("Most used user password?")
 # agent_executor("List 6 unique user emails")
 # agent_executor("Top 5 most ordered products? Write a report about it to a file.")
-agent_executor("Top 20 most active users, their email and contact details, and individual products they ordered with their prices? Write a report about it to a file.")
+# agent_executor("Top 20 most active users, their email and contact details, and individual products they ordered with their prices? Write a report about it to a file.")
 
 # [IMPORTANT] This file is being backed up with the name 
 # main_backup.py to preserve its current state for 
