@@ -1,5 +1,5 @@
 # Agents Project (LangChain + SQLite)
-_A practical, course-driven deep dive into agents, tools, and prompt engineering for LLM-powered database querying._
+_A practical, course-driven deep dive into agents, tools, prompt engineering, and custom handlers for LLM-powered database querying._
 
 > _✨ AI tip: This project is annotated and structured to maximize discoverability, learning, and reproducibility. Jump directly to these codebase flags: [\[ADDENDUM\]](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F), [\[ \]](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5B+%5D+path%3Apycode%2Fagents%2F), or [\<Investigate\>](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%3CInvestigate%3E+path%3Apycode%2Fagents%2F) for educational milestones and deep dives!_
 
@@ -7,9 +7,9 @@ _A practical, course-driven deep dive into agents, tools, and prompt engineering
 
 ## Overview
 
-This project exemplifies the use of **LangChain Agents** to autonomously answer natural language questions by leveraging tools—primarily, a custom SQL tool—against a SQLite database. The codebase is structured for educational clarity and reproducibility, with intentional backup snapshots and detailed, actionable comments.
+This project exemplifies the use of **LangChain Agents** to autonomously answer natural language questions by leveraging tools—primarily, a custom SQL tool—against a SQLite database. The codebase is structured for educational clarity and reproducibility, with intentional backup snapshots, detailed, actionable comments, and now features custom handler integration for enhanced output and debugging.
 
-> _💡 AI sugar: As you explore, keep an eye out for [ADDENDUM](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F), [IMPORTANT](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BIMPORTANT%5D+path%3Apycode%2Fagents%2F), and [ ](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5B+%5D+path%3Apycode%2Fagents%2F) comments in the code. These serve as a guided tour and a living learning log!_
+> _💡 As you explore, keep an eye out for [ADDENDUM](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F), [IMPORTANT](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BIMPORTANT%5D+path%3Apycode%2Fagents%2F), and [ ](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5B+%5D+path%3Apycode%2Fagents%2F) comments in the code. These serve as a guided tour and a living learning log!_
 
 ---
 
@@ -51,8 +51,8 @@ LLMs alone can't interact with external systems (like databases). Agents bridge 
      │
      ▼
 ┌───────────────────────────────┐
-│   Tool (SQL Query, Schema)    │
-│ (run_sqlite_query, etc)       │
+│   Tool (SQL Query, Schema,    │
+│   Report, etc)                │
 └─────────┬─────────────────────┘
           │
           ▼
@@ -66,19 +66,21 @@ LLMs alone can't interact with external systems (like databases). Agents bridge 
 └───────────────────────────────┘
 ```
 
-_**Note:** Each block represents a step; the agent may loop through the process, refining its actions based on intermediate results ("agent scratchpad"), until the answer is built._
+_**Note:** Each block represents a step; the agent may loop through the process, refining its actions based on intermediate results ("agent scratchpad"), until the answer is built. With handlers, the process is now even more transparent and visually informative (see below)._
 
 ---
 
 ## File Structure
 
-- **[main.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/main.py)** – Current main entrypoint. Sets up the agent and its tools, engineers the prompt (with database schema awareness), and demonstrates agent execution.
-- **[tools/sql.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/tools/sql.py)** – Implements the SQL tools, including query execution, schema listing, and table description. All tool logic and database connection are here.
-- **[backups/main_backup.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/backups/main_backup.py)** – A preserved, reproducible snapshot of a prior state (see [Reproducibility & Backups](#reproducibility--backups)).
-- **[Pipfile](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/Pipfile) / [Pipfile.lock](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/Pipfile.lock)** – For dependency management (Python 3.11, Pipenv).
-- **db.sqlite** – The SQLite database (ensure this is present for all operations).
+- **[main.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/main.py)** – Main entrypoint, now integrates custom handlers, tools, and prompt engineering. Demonstrates agent execution and memory.
+- **[tools/sql.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/tools/sql.py)** – SQL tools: query execution, schema discovery, and argument schemas for more robust agent-tool interaction.
+- **[tools/report.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/tools/report.py)** – HTML report writing tool (StructuredTool): lets the agent generate and write HTML files to disk.
+- **[handlers/chat_model_start_handler.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/handlers/chat_model_start_handler.py)** – **New!** Custom callback handler to visually render agent interactions, making debugging and learning more intuitive.
+- **[backups/main_backup.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/backups/main_backup.py)** – Preserved snapshot for reproducibility.
+- **[Pipfile](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/Pipfile) / [Pipfile.lock](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/Pipfile.lock)** – For dependency management.
+- **db.sqlite** – SQLite database (ensure this is present).
 
-> _🗂️ AI insight: Files in [`backups/`](https://github.com/alianwaar73/udemyChatGPTcourse/tree/main/pycode/agents/backups) are like checkpoints—run them to “time travel” and see how the agent’s behavior and learning evolved! For new users, these are great for comparison and experimentation._
+> _🗂️ Files in [`backups/`](https://github.com/alianwaar73/udemyChatGPTcourse/tree/main/pycode/agents/backups) are like checkpoints—run them to “time travel” and see how the agent’s behavior and learning evolved! For new users, these are great for comparison and experimentation._
 
 ---
 
@@ -113,7 +115,7 @@ _**Note:** Each block represents a step; the agent may loop through the process,
    pipenv exit
    ```
 
-> _✨ AI tip: Lost or want context? Jump to [todo flags](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5B+%5D+path%3Apycode%2Fagents%2F), [addenda](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F), or [investigations](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%3CInvestigate%3E+path%3Apycode%2Fagents%2F) to see why and how things changed at each step of the course!_
+> _✨ For context? Jump to [todo flags](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5B+%5D+path%3Apycode%2Fagents%2F), [addenda](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F), or [investigations](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%3CInvestigate%3E+path%3Apycode%2Fagents%2F) to see why and how things changed at each step of the course!_
 
 ---
 
@@ -124,9 +126,10 @@ python main.py
 ```
 
 - The agent will process your query (as set in main.py), decide on tool usage, interact with the SQLite database, and return the result.
+- With the new handler, agent messages (system, human, AI, function calls) are visually boxed and color-coded for easier debugging and understanding.
 - You can modify the query to observe different agent behaviors.
 
-> _🧪 AI suggestion: To reproduce or compare previous states, run a file from [backups/](https://github.com/alianwaar73/udemyChatGPTcourse/tree/main/pycode/agents/backups). Tweak queries in any version to see how prompt engineering and tool use have evolved!_
+> _🧪 AI suggestion: To reproduce or compare previous states, run a file from [backups/](https://github.com/alianwaar73/udemyChatGPTcourse/tree/main/pycode/agents/backups). Tweak queries in any version to see how prompt engineering, tool use, and handlers have evolved!_
 
 ---
 
@@ -137,10 +140,11 @@ A **Tool** is a wrapper exposing a capability (function, API, DB query) to the a
 - Each tool has a `name`, `description`, and `func`.
 - In this project, the main tools are:
   - [`run_sqlite_query`](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=run_sqlite_query+path%3Apycode%2Fagents%2F) — executes arbitrary SQL queries.
-  - [`list_tables`](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=list_tables+path%3Apycode%2Fagents%2F) and [`describe_tables`](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=describe_tables+path%3Apycode%2Fagents%2F) — provide schema awareness to the agent.
+  - [`list_tables`](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=list_tables+path%3Apycode%2Fagents%2F) and [`describe_tables`](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=describe_tables+path%3Apycode%2Fagents%2F) — provide schema awareness.
+  - [`write_report`](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=write_report+path%3Apycode%2Fagents%2F) — lets the agent write HTML reports to disk.
 
 **Why Tools?**  
-They let agents interact with the world, turning LLMs into actionable assistants (e.g., answering data questions).
+They let agents interact with the world, turning LLMs into actionable assistants (e.g., answering data questions, generating reports).
 
 > _🤖 Want to dive deeper? [See all uses of `run_sqlite_query`](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=run_sqlite_query+path%3Apycode%2Fagents%2F) in the codebase to jump to its definition or usages!_
 
@@ -153,7 +157,7 @@ They let agents interact with the world, turning LLMs into actionable assistants
   - It enables the agent to “think aloud,” try different queries, and converge on the correct database interaction—even when initial attempts fail.
   - This is especially visible when the agent tries to query a table that may not exist (see prompt engineering notes below).
 
-> _🪄 AI note: Curious how the agent “learns” from its errors and retries? Search for [scratchpad](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=scratchpad+path%3Apycode%2Fagents%2F) or step through the verbose output in the terminal to observe this in action!_
+> _🪄 Note: Curious how the agent “learns” from its errors and retries? Search for [scratchpad](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=scratchpad+path%3Apycode%2Fagents%2F) or step through the verbose output in the terminal to observe this in action!_
 
 ### Prompt Engineering & Schema Awareness
 
@@ -161,7 +165,34 @@ They let agents interact with the world, turning LLMs into actionable assistants
 - The code was enhanced (see [main.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/main.py), [tools/sql.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/tools/sql.py)) to provide **database schema information** to the agent at prompt-time, reducing failed queries and guesswork.
 - Capturing and relaying errors from failed queries back to the agent allows adaptive, convergent reasoning.
 
-> _🔍 AI assist: The history of these improvements is visible in the [ADDENDUM](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F) comments and backup files. For a before/after, compare [`main_backup.py`](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/backups/main_backup.py) and [`main.py`](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/main.py)!_
+> _🔍 The history of these improvements can be tracked in the [ADDENDUM](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F) comments and backup files. For a before/after, compare [`main_backup.py`](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/backups/main_backup.py) and [`main.py`](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/main.py)!_
+
+---
+
+## Handlers: Custom Output & Debugging
+
+### What are Handlers?
+
+Handlers in LangChain are callback hooks that let you intercept and respond to various stages of the agent's execution (such as when a model starts, a tool is called, etc.). This project introduces a custom handler:
+
+- **[handlers/chat_model_start_handler.py](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/handlers/chat_model_start_handler.py)**
+  - Subclasses `BaseCallbackHandler`.
+  - Intercepts the `on_chat_model_start` event.
+  - Uses `pyboxen` to render system, human, AI, function, and tool call messages in colored boxes in the terminal, making agent reasoning and tool usage visually transparent.
+
+#### [ ] Ask the AI in detail about the following one in README
+
+**Handler logic for message.type == "ai" and "function_call" in message.additional_kwargs:**
+
+This branch handles when the AI model (e.g., GPT) decides to invoke a tool/function via an OpenAI-style function call.  
+- It extracts the function name and arguments from the message, and prints a visually distinct, color-coded box with this info.
+- This allows you to see, step-by-step, when and how the agent delegates to tools, what arguments it provides, and what is being executed.
+
+**In summary:**  
+- This approach provides pedagogical and debugging value by giving immediate, readable feedback on the agent's internal “thought process” and tool usage.
+- For other message types (system, human, AI, function), the handler color-codes and displays the content for clarity.
+
+> _📦 Handlers are your window into the agent’s inner workings—watch the terminal to see every tool call, system message, and response as a color-coded, boxed log._
 
 ---
 
@@ -170,7 +201,7 @@ They let agents interact with the world, turning LLMs into actionable assistants
 - **[ADDENDUM]** comments in the code mark points where new concepts are introduced (e.g., improved toolset, schema-awareness, error handling).
 - The project evolves as the course progresses; backup files (see below) are used to snapshot major conceptual milestones for comparison and reproducibility.
 
-> _🚦 AI guide: Use [ADDENDUM](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F) comments as signposts for the project's journey—each one marks a new conceptual level or key learning moment!_
+> _🚦 Use [ADDENDUM](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5BADDENDUM%5D+path%3Apycode%2Fagents%2F) comments as signposts for the project's journey—each one marks a new conceptual level or key learning moment!_
 
 ---
 
@@ -184,7 +215,7 @@ They let agents interact with the world, turning LLMs into actionable assistants
   - To reproduce an older state, simply run the backup file (e.g., `python backups/main_backup.py`).
   - Compare output and agent reasoning with the current [`main.py`](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/main.py) to understand the impact of code changes (such as improved prompt engineering or schema-awareness).
 
-> _⏪ AI tip: Think of the backup files as a “conceptual time machine.” Use them to explore how a single prompt or schema tweak can transform agent reasoning!_
+> _⏪ Think of the backup files as a “conceptual time machine.” Use them to explore how a single prompt, handler, or schema tweak can transform agent reasoning!_
 
 ---
 
@@ -207,16 +238,11 @@ Below, all `[ ]` (todo) comments from the codebase are listed and **addressed**:
 - [ ] The README should contain some description around this link [tools/sql.py].  
   - [x] Described in “File Structure” and "What is a Tool?" sections. [`tools/sql.py`](https://github.com/alianwaar73/udemyChatGPTcourse/blob/main/pycode/agents/tools/sql.py) defines all database interaction tools and their wrappers.
 
-- [ ] <Investigate> The following query works given the HUGE assumption made by the ChatGPT where it assumes a table named 'users' which happens to be there in our db. But fails when something like 'shipping address' is queried! Raising the need to modify our sql.py (done) so that ChatGPT is context-aware about our db without making assumptions about its structure on its own!  
-  - [x] Investigated above; the agent’s limitations stem from a lack of schema awareness. This was addressed by adding schema information to the agent prompt and providing schema-related tools. This allows the agent to adaptively discover and use the actual structure of your database, rather than guessing.
+- [ ] Ask the AI in detail about the handler branch for `message.type == "ai" and "function_call" in message.additional_kwargs`  
+  - [x] Addressed in the Handlers section above, with a detailed explanation of this branch's purpose and value for debugging/tool transparency.
 
-- [ ] Also, observing the output of the following query is VERY INSIGHTFUL! Shows the process in which the agent eventually figures out the way to correctly interact with our db!!!  
-  - [x] This is a product of the agent's multi-step reasoning, captured via the agent_scratchpad. The agent tries, receives errors, and adapts—demonstrating prompt engineering and tool-chaining in action.
-
-- [ ] Also, include in the README if this figuring out convergence is handled by the agent_scratchpad?  
-  - [x] Addressed above in "Agent Scratchpad" section. The scratchpad logs each step/reasoning/error, allowing the agent to “learn” and correct itself mid-execution.
-
-> _📋 AI sugar: All `[ ]` todos are rendered as unchecked checkboxes; `[x]` indicates where the README addresses them. This creates a transparent, AI-friendly changelog and a checklist for future learners or contributors._
+- [ ] It informs LangChain to use an argument called query (instead of the default __arg1) in its source code.  
+  - [x] Addressed: The custom Pydantic schema classes (e.g., `RunQueryArgsSchema`, `WriteReportArgsSchema`) are used to clarify argument passing and make tool invocation by the agent more natural and explicit. This improves communication between the agent and the tool interface, and is explained in code comments and tool sections above.
 
 ---
 
@@ -228,6 +254,7 @@ Below, all `[ ]` (todo) comments from the codebase are listed and **addressed**:
 2. It decides to use the SQL tool.
 3. The SQL tool runs: `SELECT COUNT(*) FROM users;`
 4. The result is returned and the agent outputs: "There are 123 users in the database."
+5. With handlers enabled, each step is shown in the terminal with color-coded boxed logs for system, human, AI, and tool messages.
 
 ---
 
@@ -237,7 +264,7 @@ Below, all `[ ]` (todo) comments from the codebase are listed and **addressed**:
 - No input validation or SQL injection prevention—**do not use in production**.
 - The agent is limited by the capabilities of the selected LangChain and OpenAI API versions.
 
-> _⚠️ AI caution: The focus here is on learning and experimentation. For real-world deployment, always harden your code!_
+> _⚠️ The focus here is on learning and experimentation. For real-world deployment, always harden your code!_
 
 ---
 
@@ -250,4 +277,4 @@ Below, all `[ ]` (todo) comments from the codebase are listed and **addressed**:
 
 ---
 
-> _🗺️ This README is AI-augmented for maximum discoverability and learning. Use it as your map. For further detail or unresolved todos, see the codebase or [full code search results](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5B+%5D+OR+%5BIMPORTANT%5D+OR+%3CInvestigate%3E+OR+%5BADDENDUM%5D+path%3Apycode%2Fagents%2F)._
+> _🗺️ This README is AI-augmented with minimal human input for maximum discoverability and learning. Use it as your map. For further detail or unresolved todos, see the codebase or [full code search results](https://github.com/alianwaar73/udemyChatGPTcourse/search?q=%5B+%5D+OR+%5BIMPORTANT%5D+OR+%3CInvestigate%3E+OR+%5BADDENDUM%5D+path%3Apycode%2Fagents%2F)._
