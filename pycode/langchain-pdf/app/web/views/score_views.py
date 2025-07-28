@@ -3,7 +3,7 @@ from werkzeug.exceptions import BadRequest
 
 from app.web.hooks import login_required, load_model
 from app.web.db.models import Conversation
-from app.chat import score_conversation, get_scores
+from app.chat.score import score_conversation, get_scores
 
 bp = Blueprint("score", __name__, url_prefix="/api/scores")
 
