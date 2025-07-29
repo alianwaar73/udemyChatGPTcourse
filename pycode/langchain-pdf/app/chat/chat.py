@@ -1,4 +1,5 @@
 from app.chat.models import ChatArgs
+from langchain.chat_models import ChatOpenAI
 
 # Line 1 and build_chat was initiated with the package
 # The rest has been added retroactively
@@ -31,12 +32,17 @@ def build_chat(chat_args: ChatArgs):
     # pdf_id used for scoping our custom retriever
     retriever = build_retriever(chat_args)
     llm = build_llm(chat_args)
+
+    # [ ][JUAI:] Correting the behavior of followup 
+    # questions in my application.
+    condense_question_llm = ChatOpenAI(streaming=False)
     memory = build_memory(chat_args)
 
 #    return ConversationalRetrievalChain.from_llm(
 # The following is the result of [FOLLOW UP: ADDENDUM: chat.py: ConversationalRetrievalChain]
     return StreamingConversationalRetrievalChain.from_llm(
             llm=llm,
+            condense_question_llm=condense_question_llm,
             memory=memory,
             retriever=retriever
             )
