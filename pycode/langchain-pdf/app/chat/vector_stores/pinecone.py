@@ -22,7 +22,7 @@ vector_store = LangchainPinecone.from_existing_index(
         )
 
 # Building our retriever. Ref: __init__.py 
-def build_retriever(chat_args):
+def build_retriever(chat_args, k):
     search_kwargs = {
             "filter": {
                 # The following to keep a particular
@@ -30,7 +30,11 @@ def build_retriever(chat_args):
                 # uploaded PDF file which is distinguished
                 # by a unique id assigned to it.
                 "pdf_id": chat_args.pdf_id
-                }}
+                },
+            # Where as k specifies the number of
+            # documents to retrieve.
+            "k": k,
+    }
     return vector_store.as_retriever(
             search_kwargs = search_kwargs
             )

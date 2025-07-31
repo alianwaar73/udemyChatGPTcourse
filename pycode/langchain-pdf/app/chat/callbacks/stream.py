@@ -77,7 +77,7 @@ class StreamingHandler(BaseCallbackHandler):
     # as a signal for while loop that the OpenAI response
     # has finished. [JUAI:] Discuss potential caveats of
     # using None. [ ] Any better alternatives?
-    def on_llm_end(self, response, run_id **kwargs):
+    def on_llm_end(self, response, run_id, **kwargs):
         # queue.put(None)
         # The following line is used to put None in the
         # queue to signal the end of the streaming response
