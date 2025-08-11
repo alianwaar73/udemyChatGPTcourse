@@ -28,7 +28,8 @@ def create_conversation(pdf):
 @load_model(Conversation)
 def create_message(conversation):
     input = request.json.get("input")
-    streaming = request.args.get("stream", False)
+    # Robust boolean parsing for streaming flag
+    streaming = str(request.args.get("stream", "false")).lower() in {"1", "true", "yes", "on"}
 
     pdf = conversation.pdf
 
