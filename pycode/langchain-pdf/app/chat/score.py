@@ -110,22 +110,22 @@ def get_scores():
         }
     """
 
-    result = {}
+    aggregate = {
+        "llm": {},
+        "retriever": {},
+        "memory": {}
+    }
 
-    for component_type in ("llm", "retriever", "memory"):
+    for component_type in aggregate.keys():
         values = client.hgetall(f"{component_type}_score_values")
         counts = client.hgetall(f"{component_type}_score_counts")
 
-        names = set(values.keys()) | set(counts.keys())
-        result[component_type] = {}
-        for name in names:
-            total = float(values.get(name, 0.0))
-            count = int(counts.get(name, 0))
-            avg = (total / count) if count > 0 else 0.0
-            result[component_type][name] = {
-                "avg": avg,
-                "count": count,
-                "sum": total,
-            }
+        names = values.keys()
 
-    return result
+        for name in names:
+            score = int(values.get(name, 1))
+            count = int(counts.get(name, 1))
+            avg = score / count
+            aggregate[component_type][name] = [avg]
+
+    return aggregate
