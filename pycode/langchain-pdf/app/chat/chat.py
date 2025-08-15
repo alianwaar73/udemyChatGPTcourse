@@ -41,6 +41,10 @@ from app.web.api import (
 
 from app.chat.score import random_component_by_score
 
+# Langfuse specific imports
+# from app.chat.tracing.langfuse import langfuse
+# from langfuse.model import CreateTrace
+
 def select_component(
     component_type,
     component_map,
@@ -159,6 +163,15 @@ def build_chat(chat_args: ChatArgs):
     # # [ ][JUAI:] Correting the behavior of followup 
     # # questions in my application.
     condense_question_llm = ChatOpenAI(streaming=False)
+
+    # # Langfuse specific tracing setup
+    # trace = langfuse.trace(
+    #     CreateTrace(
+    #         id=chat_args.conversation_id,
+    #         metadata=chat_args.metadata
+    #     )
+    # )
+    #
     # memory = build_memory(chat_args)
     #
 #    return ConversationalRetrievalChain.from_llm(
@@ -167,5 +180,7 @@ def build_chat(chat_args: ChatArgs):
             llm=llm,
             condense_question_llm=condense_question_llm,
             memory=memory,
-            retriever=retriever
+            retriever=retriever,
+            # callbacks=[trace.getNewHandler()],
+            metadata=chat_args.metadata
             )
