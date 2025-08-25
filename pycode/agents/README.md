@@ -125,7 +125,14 @@ _**Note:** Each block represents a step; the agent may loop through the process,
 python main.py
 ```
 
-- The agent will process your query (as set in main.py), decide on tool usage, interact with the SQLite database, and return the result.
+- The agent will process your query (as set in main.py), decide on appropriate tool usage, interact with the SQLite database, and return the result. **Report tool** can be used to generate HTML reports. In order to use this tool, one can specify it in the agent_executor inittialization in main.py. There is an example agent_executor initialization with the report tool in that that be uncommented to see how it works. An example of its usage is as follows:
+
+---
+
+```python
+ agent_executor("List of top 50 bought products and write them in a html report").
+```
+
 - With the new handler, agent messages (system, human, AI, function calls) are visually boxed and color-coded for easier debugging and understanding.
 - You can modify the query to observe different agent behaviors.
 
@@ -274,6 +281,12 @@ Below, all `[ ]` (todo) comments from the codebase are listed and **addressed**:
 - Pipenv
 - OpenAI account/API key
 - SQLite database (`db.sqlite`)
+
+---
+
+## Planned Improvements
+
+- Automate database prompting using argument passing at CLI.
 
 ---
 

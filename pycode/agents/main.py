@@ -141,7 +141,7 @@ agent_executor = AgentExecutor(
 
 # Collection of different prompts that can be tried
 # agent_executor("What is the most-used shipping address?")
-agent_executor("How many users have provided a shipping address?")
+agent_executor("A list of top 50 bought products with all the associated details. Write a detailed report about it to a file.")
 # agent_executor("Most used user password?")
 # agent_executor("List 6 unique user emails")
 # agent_executor("Top 5 most ordered products? Write a report about it to a file.")
