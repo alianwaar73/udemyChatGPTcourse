@@ -106,6 +106,8 @@ agent_executor = AgentExecutor(
         memory=memory
         )
 
+
+if __name__ == "__main__":
 # In the following we make use of our agent_executor defined 
 # above
 # [ ] <Investigation> The following query works given the 
@@ -141,11 +143,33 @@ agent_executor = AgentExecutor(
 
 # Collection of different prompts that can be tried
 # agent_executor("What is the most-used shipping address?")
-agent_executor("A list of top 50 bought products with all the associated details. Write a detailed report about it to a file.")
-# agent_executor("Most used user password?")
-# agent_executor("List 6 unique user emails")
-# agent_executor("Top 5 most ordered products? Write a report about it to a file.")
-# agent_executor("Top 20 most active users, their email and contact details, and individual products they ordered with their prices? Write a report about it to a file.")
+    print("Interactive agent ready. Type your prompt, or 'quit' to exit.")
+    while True:
+        try:
+            user_input = input("You> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\nExiting.")
+            break
+
+        if not user_input:
+            continue
+
+        if user_input.lower() in {"quit", "exit", ":q", "q"}:
+            print("Goodbye!")
+            break
+
+        try:
+            result = agent_executor.run(user_input)
+            if result is not None:
+                print(f"Assistant> {result}")
+        except Exception as e:
+            print(f"Error while running agent: {e}")
+            continue
+    
+    # agent_executor("Most used user password?")
+    # agent_executor("List 6 unique user emails")
+    # agent_executor("Top 5 most ordered products? Write a report about it to a file.")
+    # agent_executor("Top 20 most active users, their email and contact details, and individual products they ordered with their prices? Write a report about it to a file.")
 
 # [IMPORTANT] This file is being backed up with the name 
 # main_backup.py to preserve its current state for 

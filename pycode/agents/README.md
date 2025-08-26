@@ -121,20 +121,23 @@ _**Note:** Each block represents a step; the agent may loop through the process,
 
 ## Usage
 
+Run the interactive agent REPL:
+
 ```bash
-python main.py
+pipenv run python main.py
 ```
 
-- The agent will process your query (as set in main.py), decide on appropriate tool usage, interact with the SQLite database, and return the result. **Report tool** can be used to generate HTML reports. In order to use this tool, one can specify it in the agent_executor inittialization in main.py. There is an example agent_executor initialization with the report tool in that that be uncommented to see how it works. An example of its usage is as follows:
+- Type your prompt at `You>` and press Enter. The agent will decide on tool usage (SQL/report), interact with the SQLite database, and print the final answer. Type `quit` (or `exit`, `:q`, `q`) to leave.
+- The **Report tool** can be used by simply asking for a report, e.g.:
 
 ---
 
 ```python
- agent_executor("List of top 50 bought products and write them in a html report").
+ "List the top 50 bought products with details and write an HTML report to disk."
 ```
 
-- With the new handler, agent messages (system, human, AI, function calls) are visually boxed and color-coded for easier debugging and understanding.
-- You can modify the query to observe different agent behaviors.
+- With the custom handler, agent messages (system, human, AI, function calls) are visually boxed and color-coded for easier debugging and understanding.
+- Use multiple turns in the same session; conversation memory keeps prior exchanges in context.
 
 > _🧪 AI suggestion: To reproduce or compare previous states, run a file from [backups/](https://github.com/alianwaar73/udemyChatGPTcourse/tree/main/pycode/agents/backups). Tweak queries in any version to see how prompt engineering, tool use, and handlers have evolved!_
 
