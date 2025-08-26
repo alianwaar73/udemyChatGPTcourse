@@ -107,7 +107,12 @@ agent_executor = AgentExecutor(
         )
 
 
+# The following guard is added to in order to make this
+# file import-safe. i.e. if this file is imported in
+# another file, the following code block will not be
+# executed. This is a good practice in Python programming.
 if __name__ == "__main__":
+
 # In the following we make use of our agent_executor defined 
 # above
 # [ ] <Investigation> The following query works given the 
@@ -143,7 +148,9 @@ if __name__ == "__main__":
 
 # Collection of different prompts that can be tried
 # agent_executor("What is the most-used shipping address?")
-    print("Interactive agent ready. Type your prompt, or 'quit' to exit.")
+
+    # Interactive loop to chat with the agent
+    print("Interactive agent ready. Type your prompt, or 'quit' to exit. You can ask for a report to be written in a file in the same prompt.")
     while True:
         try:
             user_input = input("You> ").strip()
