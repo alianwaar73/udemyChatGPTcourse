@@ -72,15 +72,58 @@ This will print out the most relevant facts for a sample query.
 > **Note:**  
 > Each time you run `main.py`, embeddings are recalculated and stored in ChromaDB, which may incur OpenAI API costs. In a production setup, embedding calculation and storage should be decoupled to avoid redundant computation and extra costs.
 
-### 2. **Querying the Facts**
+### 2. **Interactive REPL**
 
-Once embeddings are stored, you can interactively query the facts using:
+Start an interactive REPL that informs you about the available facts and index status, and lets you query the knowledge base:
+
+```bash
+pipenv run python repl.py
+```
+
+On startup, the REPL prints a scope banner with:
+- facts file path, rough line count, and last modified time
+- topic hints auto-detected from `facts.txt`
+- vector store status (ready/missing) for the `emb/` directory
+- current mode (DEFAULT/STRICT), k, and similarity threshold
+
+Built-in commands:
+- `:help` — list commands
+- `:scope` — reprint the scope banner
+- `:sources` — toggle printing supporting fact snippets
+- `:rebuild` — build/rebuild the vector index from `facts.txt` (prompts first; uses your API key)
+- `:strict` — toggle strict mode (threshold-gated retrieval and an "abstain" prompt)
+- `:topk <n>` — set number of chunks to retrieve (1–10)
+- `:thresh <0-1>` — set similarity score threshold for strict mode (0–1)
+- `:clear` — clear the screen
+- `:exit`/`:quit` — leave the REPL
+
+You can ask natural questions like: “Which continent is least populated?” or “Tell me 2 facts about Mars.”
+
+> Note:
+> - If `emb/` does not exist, the REPL can create it for you and persist embeddings there. This uses your OpenAI API key and may incur minimal costs.
+> - You can still enter the REPL without an index and run `:rebuild` later.
+
+### 3. **One-off Query Script**
+
+For a minimal example using a retrieval QA chain without the REPL, you can still run:
 
 ```bash
 python prompt.py
 ```
 
-This script uses a chain with a chat model and retrieves relevant facts from the vector store, demonstrating retrieval-augmented QA with redundancy filtering.
+However, prefer `repl.py` for interactive workflows.
+
+---
+
+## Out-of-Scope Handling
+
+LLMs can answer from prior knowledge even when the facts don’t contain relevant context. The REPL implements multiple safeguards:
+
+- Strict mode (`:strict`): uses a similarity score threshold during retrieval and a prompt that instructs the model to abstain if context is insufficient.
+- Pre-flight gate: before calling the LLM, if no documents are retrieved, the REPL returns “Out of scope: I don't have that information in my facts.”
+- Deterministic generation: temperature is set to 0 to reduce hallucinations.
+
+Tune behavior with `:topk <n>` and `:thresh <0-1>`. If you routinely hit out-of-scope, consider enriching `facts.txt` or lowering the threshold slightly.
 
 ---
 
@@ -144,4 +187,4 @@ All todo comments from code files have been summarized and addressed in the most
 
 ---
 
-> _This README was generated and updated using Copilot's AI. All todo comments in code files have been summarized, addressed, and clarified per project instructions._
+> _This README was generated using Copilot's AI and updated with OpenAI's codex-cli with minimal human input (this line is the only human input!). All todo comments in code files have been summarized, addressed, and clarified per project instructions._

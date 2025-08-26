@@ -1,4 +1,9 @@
-# File to enable a user type in a query. Contains code for chains to do that
+"""
+One-off example to query the stored facts using a RetrievalQA chain.
+
+Note: For an interactive experience with scope info and helpful commands,
+prefer running `repl.py`.
+"""
 
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
