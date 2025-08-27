@@ -12,6 +12,7 @@ The project showcases:
 - **Embeddings and Vector Store:** Each chunk is embedded using OpenAI's embeddings and stored in a Chroma vector database.
 - **Prompting and Retrieval:** The system allows querying the stored facts using a prompt, leveraging retrieval-augmented generation (RAG) pipelines.
 - **Redundancy Filtering:** Custom retrieval logic is implemented to remove duplicate/redundant documents from query results using embedding similarity.
+ - **Context Scoping & Leak Awareness:** Answers aim to stay within `facts.txt`; references and a leak warning help you assess grounding and provenance.
 
 ---
 
@@ -127,6 +128,19 @@ However, prefer `repl.py` for interactive workflows.
 
 ---
 
+## Context Scoping & Leaks
+
+Context scoping means constraining answers to the information present in a defined corpus (here: `facts.txt`). A “context leak” occurs when an answer appears to rely on knowledge outside the retrieved context. This came up quite organically during the implementation of REPL to this project. It is observed that if the very first prompt is grounded in the provided facts and the follow up are not then the conversation continues disregarding the provided facts or context. For now it does not seem harmful or troublesome but it is still context leakage worth studies.
+
+- Why it matters: reproducibility, provenance/compliance, safety, and trust. In sensitive applications, scoping failures can produce confident but unsupported claims.
+- Guardrails in this project:
+  - Strict mode: threshold-gated retrieval and a prompt that instructs abstention if evidence is insufficient.
+  - Pre-flight gate: if retrieval returns no documents, the REPL abstains without calling the LLM.
+  - References: optional display of supporting snippets from retrieved chunks.
+  - Leak detection: a deterministic n-gram coverage heuristic flags potential leaks after answering.
+- Interpretation: a leak warning is a signal to investigate (e.g., enable `:sources`). It may yield false positives/negatives; tune thresholds and combine with human review in high-stakes settings.
+- **Status**: context scoping and leaking came up organically, as mentioned above, I am treating this as active area of study and work in progress. It is quite interesting nonetheless.
+
 ## Context Leak Checks
 
 For context-sensitive applications, you may want to detect when an answer is not sufficiently grounded in the retrieved facts. This project includes a simple, deterministic heuristic:
@@ -147,6 +161,8 @@ What it does:
 
 Notes:
 - This is a heuristic, not a proof. Tune the threshold to your data and, if needed, add domain-specific allowlists/regexes to ignore boilerplate words.
+ - The REPL integrates this check and prints a concise status line after answers. Treat it as guidance to inspect sources rather than an absolute verdict.
+ - **Context scoping and leaking:** is being studied and is work in progress.
 
 ---
 
@@ -222,4 +238,4 @@ All todo comments from code files have been summarized and addressed in the most
 
 ---
 
-> _This README was generated using Copilot's AI and updated with OpenAI's codex-cli with minimal human input (this line is the only human input!). All todo comments in code files have been summarized, addressed, and clarified per project instructions._
+> _This README was generated using Copilot's AI and updated with OpenAI's codex-cli with minimal human input (only the parts related to further study and work in progress). All todo comments in code files have been summarized, addressed, and clarified per project instructions._

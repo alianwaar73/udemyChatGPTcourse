@@ -39,3 +39,11 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ### Changed
 - `prompt.py` now returns source documents and formats references when requested.
+
+## [0.3.1] - 2025-08-27
+
+### Added
+- Documentation on context scoping and leak detection: why it matters, how it works in this project, and practical usage in the REPL.
+
+### Notes
+- Context scoping and context leaking are active areas of study and ongoing work. The included leak detector is a heuristic signal intended for developer awareness, not a definitive guarantee of grounding.
