@@ -89,7 +89,7 @@ On startup, the REPL prints a scope banner with:
 Built-in commands:
 - `:help` — list commands
 - `:scope` — reprint the scope banner
-- `:sources` — toggle printing supporting fact snippets
+- `:sources` — toggle printing supporting fact snippets (references)
 - `:rebuild` — build/rebuild the vector index from `facts.txt` (prompts first; uses your API key)
 - `:strict` — toggle strict mode (threshold-gated retrieval and an "abstain" prompt)
 - `:topk <n>` — set number of chunks to retrieve (1–10)
@@ -97,7 +97,12 @@ Built-in commands:
 - `:clear` — clear the screen
 - `:exit`/`:quit` — leave the REPL
 
-You can ask natural questions like: “Which continent is least populated?” or “Tell me 2 facts about Mars.”
+You can ask natural questions like: “Which continent is least populated?” or “Tell me 2 facts about Mars.”  
+Add phrases like “with references” or “show sources” to any question to automatically print matched fact snippets for that answer, e.g.:
+
+```
+facts> Tell me 2 facts about Mars with references
+```
 
 > Note:
 > - If `emb/` does not exist, the REPL can create it for you and persist embeddings there. This uses your OpenAI API key and may incur minimal costs.
@@ -111,7 +116,37 @@ For a minimal example using a retrieval QA chain without the REPL, you can still
 python prompt.py
 ```
 
+To always include references in this one-off mode, pass `--refs` or include words like “references” in your question:
+
+```
+python prompt.py --refs "Things about languages?"
+python prompt.py "Things about languages with references"
+```
+
 However, prefer `repl.py` for interactive workflows.
+
+---
+
+## Context Leak Checks
+
+For context-sensitive applications, you may want to detect when an answer is not sufficiently grounded in the retrieved facts. This project includes a simple, deterministic heuristic:
+
+- Implementation: `leak_detection.py`
+- Tests: `tests/test_leak_detection.py`
+
+Install and run tests:
+
+```
+pipenv install --dev pytest
+pipenv run pytest -q
+```
+
+What it does:
+- Computes word n-gram coverage of the answer against concatenated source snippets and flags a potential leak if coverage is below a threshold (default 0.5).
+- No network or LLM calls; fast and CI-friendly.
+
+Notes:
+- This is a heuristic, not a proof. Tune the threshold to your data and, if needed, add domain-specific allowlists/regexes to ignore boilerplate words.
 
 ---
 

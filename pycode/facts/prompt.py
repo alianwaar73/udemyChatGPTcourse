@@ -1,53 +1,79 @@
 """
 One-off example to query the stored facts using a RetrievalQA chain.
 
-Note: For an interactive experience with scope info and helpful commands,
-prefer running `repl.py`.
+Prefer running `repl.py` for an interactive experience. This script now supports
+printing references to matched facts when requested.
+
+Usage:
+  python prompt.py "Your question here"
+  python prompt.py --refs "Your question here"  # always print sources
 """
+
+import sys
+from typing import List
 
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
-
-# In the following import we import RetrievalQA, a chain that contains system and human message chains within to make prompting and retrieving relavant information, in the context of an application such as this project, from documents smoother.
 from langchain.chains import RetrievalQA
-
 from langchain.chat_models import ChatOpenAI
+from langchain.schema import Document
 
-# Removing document duplication stored in our ChromaDB (vector store) using the following import for our custom Retriever class that contains this functionality.
 from redundant_filter_retriever import RedundantFilterRetriever
 
-# Following is to load our OpenAI API key
 from dotenv import load_dotenv
 import langchain
 
-# Comment out the following to suppress the debug info
-langchain.debug = True
 
-load_dotenv()
+def format_sources(docs: List[Document]) -> str:
+    lines = []
+    for i, d in enumerate(docs, 1):
+        snippet = d.page_content.strip().replace("\n", " ")
+        if len(snippet) > 180:
+            snippet = snippet[:177] + "..."
+        lines.append(f"[{i}] {snippet}")
+    return "\n".join(lines)
 
-chat = ChatOpenAI()
-embeddings = OpenAIEmbeddings()
 
-# In the following a slightly different way to create a Chroma instance than done in main.py. The reason being here we merely want an access to it instead of always populating it with docs in order to decouple the functionalities of prompting and storing
-db = Chroma(
-        persist_directory="emb",
-        # [ ] Slightly confused with the following line. Are we re        # calculating the embeddings here? If so then why? Shouldn        #  't we just be accessing it somehow?
-        embedding_function=embeddings
-        )
+def main() -> int:
+    # Comment out the following to suppress the debug info
+    langchain.debug = False
+    load_dotenv()
 
-## Uncomment the following and comment out the block next to it to use default retriever
-# retriever = db.as_retriever()
-retriever = RedundantFilterRetriever(
-        embeddings=embeddings,
-        chroma=db
-        )
+    # Parse simple args
+    args = [a for a in sys.argv[1:] if a.strip()]
+    force_refs = False
+    if args and args[0] == "--refs":
+        force_refs = True
+        args = args[1:]
+    question = "Things about languages?" if not args else " ".join(args)
 
-chain = RetrievalQA.from_chain_type(
+    chat = ChatOpenAI(temperature=0)
+    embeddings = OpenAIEmbeddings()
+
+    db = Chroma(persist_directory="emb", embedding_function=embeddings)
+    retriever = RedundantFilterRetriever(embeddings=embeddings, chroma=db)
+
+    chain = RetrievalQA.from_chain_type(
         llm=chat,
         retriever=retriever,
-        chain_type="stuff"
-        )
+        chain_type="stuff",
+        return_source_documents=True,
+    )
 
-result = chain.run("Things about languages?")
+    # Heuristic: if the user asks for references/sources/citations, show them
+    ql = question.lower()
+    wants_refs = any(k in ql for k in ["reference", "references", "source", "sources", "cite", "citation", "citations"]) or force_refs
 
-print(result)
+    result = chain({"query": question})
+    answer = result.get("result", "").strip()
+    print(answer)
+    if wants_refs:
+        docs = result.get("source_documents") or []
+        if docs:
+            print("\nSources:")
+            print(format_sources(docs))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -16,6 +16,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.schema import Document
 
 from redundant_filter_retriever import RedundantFilterRetriever
+from leak_detection import detect_context_leak, coverage_report
 
 FACTS_PATH = Path("facts.txt")
 EMB_DIR = "emb"
@@ -178,6 +179,7 @@ def main() -> None:
     strict_mode = False
     top_k = 4
     score_threshold = 0.25
+    leak_min_coverage = 0.5
 
     strict_prompt = PromptTemplate(
         input_variables=["context", "question"],
@@ -301,12 +303,31 @@ def main() -> None:
             print(f"Error: {e}")
             continue
 
-        print(result.get("result", "").strip())
-        if show_sources:
-            docs = result.get("source_documents") or []
+        answer_text = result.get("result", "").strip()
+        print(answer_text)
+
+        # Auto-show sources if the user explicitly asked for references/sources/citations.
+        ql = inp.lower()
+        wants_refs = any(k in ql for k in ["reference", "references", "source", "sources", "cite", "citation", "citations"])  # simple heuristic
+
+        docs = result.get("source_documents") or []
+
+        # Context leak check: run always; report minimally to avoid noise.
+        try:
+            is_leak, cov = detect_context_leak(answer_text, docs, min_coverage=leak_min_coverage)
+        except Exception:
+            is_leak, cov = False, 0.0
+
+        if show_sources or wants_refs:
             if docs:
                 print("\nSources:")
                 print(format_sources(docs))
+            # Show explicit status line when sources are displayed
+            print(coverage_report(answer_text, docs, min_coverage=leak_min_coverage))
+        else:
+            # If not showing sources, still warn loudly on suspected leak
+            if is_leak:
+                print(f"\ncontext-check: LEAK (coverage={cov:.2f}, threshold={leak_min_coverage:.2f}) — use :sources to inspect supporting snippets.")
 
 
 if __name__ == "__main__":

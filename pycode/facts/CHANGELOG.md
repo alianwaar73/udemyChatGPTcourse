@@ -30,3 +30,12 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 ### Added
 - Initial version: load, split, embed facts, and store in Chroma (`main.py`).
 - Custom `RedundantFilterRetriever` and example `prompt.py` for retrieval-augmented QA.
+## [0.3.0] - 2025-08-27
+
+### Added
+- References output: print matched fact snippets (sources) alongside answers.
+  - REPL: toggle with `:sources`, or auto-show when the question includes words like "references", "sources", or "citations".
+  - `prompt.py`: support `--refs` flag and the same keyword heuristic to print sources.
+
+### Changed
+- `prompt.py` now returns source documents and formats references when requested.
